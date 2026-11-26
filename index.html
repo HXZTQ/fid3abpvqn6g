@@ -115,10 +115,61 @@ h2 small{font-size:13px;color:var(--sub);font-weight:400}
   padding-inline-end:max(16px,env(safe-area-inset-right));
 }
 
+/* 归档箱：右下角的按钮和点开后的整页 */
+#s-home .w{padding-bottom:calc(env(safe-area-inset-bottom) + 100px)}
+#arc-btn{position:fixed;z-index:30;right:max(16px,env(safe-area-inset-right));bottom:calc(env(safe-area-inset-bottom) + 16px);
+  display:flex;align-items:center;gap:8px;min-height:52px;padding:0 18px 0 14px;border-radius:26px;
+  background:var(--card);color:var(--fg);border:1px solid var(--line);box-shadow:0 4px 16px rgba(0,0,0,.14);font-size:16px;font-weight:600}
+#arc-btn svg{width:24px;height:24px;flex:none;color:var(--sub)}
+#arc-btn .cnt{font-size:14px;font-weight:400;color:var(--sub);font-variant-numeric:tabular-nums}
+#arc{position:fixed;inset:0;z-index:35;background:var(--bg);display:flex;flex-direction:column}
+.abar{flex:none;display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top) + 6px) 10px 6px;
+  background:var(--card);border-bottom:1px solid var(--line)}
+.abar .back{flex:none;min-width:64px;min-height:44px;font-size:17px;color:var(--acc);text-align:left;padding-left:4px}
+.abar .at{flex:1;min-width:0;text-align:center;font-weight:600;font-size:16px}
+.abar .sp{flex:none;min-width:64px}
+.abody{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch}
+.aw{max-width:520px;margin:0 auto;padding:14px 16px calc(env(safe-area-inset-bottom) + 40px)}
+.anote{font-size:14px;color:var(--sub);margin:2px 4px 0}
+input[type=search]{-webkit-appearance:none;appearance:none;width:100%;font-size:18px;padding:12px 16px;border-radius:14px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);outline:none;min-height:50px}
+input[type=search]:focus{border-color:var(--acc)}
+.col{min-width:0}
+.hit{font-size:14px;color:var(--sub);margin:10px 4px 0;min-height:20px}
+#toast{position:fixed;z-index:55;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 84px);
+  background:var(--fg);color:var(--bg);padding:11px 18px;border-radius:14px;font-size:15px;line-height:1.4;
+  max-width:calc(100% - 32px);width:max-content;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+.abar,.aw{padding-inline-start:max(16px,env(safe-area-inset-left));padding-inline-end:max(16px,env(safe-area-inset-right))}
+@media (hover:hover){.open:hover .nm{text-decoration:underline;text-underline-offset:3px}}
+
 @media (min-width:640px){
   .w{padding-top:calc(env(safe-area-inset-top) + 28px)}
   h2{margin-top:32px}
   .vbar{padding-inline:max(16px,calc((100% - 488px) / 2))}
+}
+/* iPad（11 寸竖屏 834 宽起）：内容放宽、字和行放大；弹层改成居中 */
+@media (min-width:768px){
+  .w,.aw{max-width:760px;padding-inline:max(28px,env(safe-area-inset-left)) max(28px,env(safe-area-inset-right))}
+  .title{font-size:28px;margin-bottom:16px}
+  .up{padding:26px 26px}.up .t{font-size:28px}.up .s{font-size:16px}
+  h2{font-size:19px}
+  .day{font-size:14px}
+  .row{min-height:72px;padding:14px 14px 14px 16px}
+  .nm{font-size:17px}.meta{font-size:14px}
+  .ic{width:42px;height:42px}
+  .dl{min-width:64px;min-height:48px;font-size:15px}
+  .vbar{padding-inline:max(16px,calc((100% - 728px) / 2))}
+  .abar{padding-inline:max(16px,calc((100% - 728px) / 2))}
+  #sheet{align-items:center}
+  #sheet .sh{max-width:460px;border-radius:18px;padding-bottom:18px}
+  #arc-btn{right:max(28px,env(safe-area-inset-right));bottom:calc(env(safe-area-inset-bottom) + 24px)}
+}
+/* 横屏和 12.9 寸竖屏（980 宽起）：老师发的、我交的左右两栏 */
+@media (min-width:980px){
+  .w,.aw{max-width:1120px}
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 32px;align-items:start}
+  .cols.one{grid-template-columns:minmax(0,1fr)}
+  .vbar,.abar{padding-inline:max(16px,calc((100% - 1088px) / 2))}
 }
 </style>
 </head>
@@ -150,12 +201,28 @@ h2 small{font-size:13px;color:var(--sub);font-weight:400}
   <label class="up" for="file" id="up-btn"><div class="t">上传文件</div><div class="s">作业照片、PDF 都行，可以一次选好几个</div></label>
   <div class="prog" id="tasks" hidden></div>
 
-  <h2>老师发的 <small>点一下打开</small></h2>
-  <div id="l-teacher"></div>
-  <h2>我交的 <small>老师能看到</small></h2>
-  <div id="l-mine"></div>
+  <div class="cols">
+    <div class="col"><h2>老师发的 <small>点一下打开</small></h2><div id="l-teacher"></div></div>
+    <div class="col"><h2>我交的 <small>老师能看到</small></h2><div id="l-mine"></div></div>
+  </div>
   <div class="ver" id="ver"></div>
-</div></section>
+</div>
+<button id="arc-btn" aria-label="归档箱：存过的文件"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9"/><path d="M10 13h4"/></svg><span>归档</span><span class="cnt" id="arc-cnt"></span></button>
+</section>
+
+<div id="arc" hidden>
+  <div class="abar"><button class="back" id="a-back">‹ 返回</button><div class="at">归档箱</div><div class="sp"></div></div>
+  <div class="abody" id="a-body"><div class="aw">
+    <input id="a-q" type="search" placeholder="搜文件名或日期，比如 25课、11月27" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" aria-label="搜索归档">
+    <div class="hit" id="a-hit"></div>
+    <div class="cols">
+      <div class="col" id="a-tcol"><h2>老师发的 <small>存过的</small></h2><div id="a-teacher"></div></div>
+      <div class="col" id="a-mcol"><h2>我交的 <small>7 天以前的</small></h2><div id="a-mine"></div></div>
+    </div>
+    <p class="anote">存到 iPad 上的文件丢了，在这里找到再点「下载」就行。</p>
+  </div></div>
+</div>
+<div id="toast" hidden role="status"></div>
 
 <div id="viewer" hidden>
   <div class="vbar"><button class="back" id="v-back">‹ 返回</button><div class="vname" id="v-name"></div><button class="dl" id="v-dl">下载</button></div>
@@ -299,6 +366,48 @@ function lockWait(n) { return n < 3 ? 0 : n === 3 ? 5 : n === 4 ? 15 : n === 5 ?
 /* 「新」只标在老师发的、本机还没打开或下载过的 */
 const isNew = (it, seen) => it.kind === 'teacher' && !(seen && seen[it.path]);
 
+/* ---- 归档：存过（下载过）的文件和 7 天以前自己交的，不在首页显示，放进归档箱 ----
+   「存过」记在仓库里的 REC 一个文件（换设备、清 Safari 都还在），本机 localStorage 再留一份（没网也立刻生效） */
+const REC = '记录/已下载.json';
+const KEEP_MINE_DAYS = 7;
+function parseRec(text, strict) { // → {路径: 时间}；strict 时文件坏了抛 BADREC（不拿空的去盖掉远端），否则当空的
+  let j = null;
+  try { j = JSON.parse(text); } catch (e) {}
+  const out = {}, f = j && j.files;
+  if (strict && !(f && typeof f === 'object' && !Array.isArray(f))) throw new Error('BADREC');
+  if (f && typeof f === 'object' && !Array.isArray(f)) for (const k of Object.keys(f)) if (ITEM_RE.test(k)) out[k] = String(f[k]).slice(0, 40);
+  return out;
+}
+function recText(map) { // 稳定排序，方便看 diff
+  const f = {};
+  for (const k of Object.keys(map).sort()) f[k] = map[k];
+  return JSON.stringify({ v: 1, note: '妹妹在网页上存过的文件（网页自动写；删掉一行，那个文件就回到她首页）', files: f }, null, 1) + '\n';
+}
+function nowStamp(d) { const s = stamp(d); return s.day + ' ' + s.hhmm.slice(0, 2) + ':' + s.hhmm.slice(2); }
+function dayMinus(day, n) { // 'YYYY-MM-DD' 往前 n 天（按日历算，不受时区影响）
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(day);
+  if (!m) return day;
+  const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3] - n));
+  return d.getUTCFullYear() + '-' + p2(d.getUTCMonth() + 1) + '-' + p2(d.getUTCDate());
+}
+/* today：本机日期 'YYYY-MM-DD'。自己交的保留最近 7 天（含今天）在首页 */
+function isArchived(it, done, today) {
+  if (done && done[it.path]) return true;
+  return it.kind === 'mine' && !!today && it.day < dayMinus(today, KEEP_MINE_DAYS - 1);
+}
+/* 搜索：全角半角、大小写、片假名平假名都不分；空格隔开的几个词都要对上；日期也能搜（11-27、11月27、周四） */
+function fold(s) {
+  let t = String(s == null ? '' : s);
+  try { t = t.normalize('NFKC'); } catch (e) {}
+  return t.toLowerCase().replace(/[\u30a1-\u30f6]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
+}
+function matchItem(it, q) {
+  const terms = fold(q).split(/\s+/).filter(Boolean);
+  if (!terms.length) return true;
+  const hay = fold([it.name, it.day, it.day.slice(5), dayLabel(it.day), it.kind === 'teacher' ? '老师发的' : '我交的'].join(' '));
+  return terms.every(w => hay.indexOf(w) >= 0);
+}
+
 /* ---- 编码、摘要 ---- */
 const hex = u8 => Array.from(u8, b => b.toString(16).padStart(2, '0')).join('');
 const unhex = s => new Uint8Array((String(s).match(/../g) || []).map(h => parseInt(h, 16)));
@@ -368,7 +477,7 @@ class Client {
       let r = null;
       try { r = await this.req(o); } catch (e) { r = null; }
       const st = r ? r.status : 0;
-      const again = !r || st >= 500 || (st === 409 && o.method === 'PUT');
+      const again = !r || st >= 500 || (st === 409 && o.method === 'PUT' && !o.no409);
       if (!again || i >= this.delays.length) { if (!r) throw apiErr('NET'); return r; }
       await this.sleep(this.delays[i]);
     }
@@ -445,6 +554,35 @@ class Client {
     }
     throw statusErr(r.status);
   }
+  /* ---- 已下载记录：只读写 REC 这一个路径（上传仍然只许写 交卷/） ---- */
+  async readRec() { // → {map, sha}；没有这个文件就是空的
+    const r = await this._call({ method: 'GET', url: this._url(REC), headers: this._headers(false), type: 'text' });
+    if (r.status === 404) return { map: {}, sha: null };
+    if (r.status !== 200) throw statusErr(r.status);
+    let j;
+    try { j = JSON.parse(r.text); } catch (e) { throw apiErr('HTTP', r.status); }
+    let text;
+    try { const bin = atob(String(j.content || '').replace(/\s/g, '')); text = new TextDecoder('utf-8', { fatal: true }).decode(Uint8Array.from(bin, c => c.charCodeAt(0))); }
+    catch (e) { throw apiErr('BADREC', 200); }
+    return { map: parseRec(text, true), sha: typeof j.sha === 'string' ? j.sha : null };
+  }
+  /* 把 add 并进远端记录（只增不删，所以和别处同时写也不会丢）。返回合并后的全部；远端已经都有就不写 */
+  async mergeRec(add) {
+    for (let i = 0; i < 4; i++) {
+      const cur = await this.readRec(), all = Object.assign({}, cur.map);
+      let changed = false;
+      for (const k of Object.keys(add || {})) if (ITEM_RE.test(k) && !all[k]) { all[k] = String(add[k]); changed = true; }
+      if (!changed) return all;
+      const body = { message: '记录 已下载', content: b64(enc.encode(recText(all))) };
+      if (cur.sha) body.sha = cur.sha;
+      const r = await this._call({ method: 'PUT', url: this._url(REC), headers: Object.assign(this._headers(false), { 'Content-Type': 'application/json' }),
+        body: JSON.stringify(body), type: 'text', no409: true });
+      if (r.status === 200 || r.status === 201) return all;
+      if (r.status !== 409 && r.status !== 422) throw statusErr(r.status); // 409/422：别处刚改过，重读再并
+      await this.sleep(500 * (i + 1));
+    }
+    throw apiErr('HTTP', 409);
+  }
   /* 上传。task = {file(Blob), clean(清洗后的名字), top('交卷'等), day, hhmm, base?}；base 第一次定下就留在 task 上，重试接着用
      onProgress(已传字节, 总字节, 第几块, 共几块)。返回仓库路径 */
   async upload(task, onProgress) {
@@ -486,7 +624,7 @@ class Client {
 }
 
 const FB = { API, CHUNK, MAX_TOTAL, DIRS, apiBase, sanitizeName, splitExt, uniqueName, stamp, encPath, parseTree, dayLabel, groupItems,
-  fmtSize, extTag, mimeOf, kindOf, lockWait, isNew, hex, unhex, b64, sha256hex, gitSha, decryptBox, Client };
+  fmtSize, extTag, mimeOf, kindOf, lockWait, isNew, REC, parseRec, recText, nowStamp, dayMinus, isArchived, fold, matchItem, hex, unhex, b64, sha256hex, gitSha, decryptBox, Client };
 if (typeof module !== 'undefined' && module.exports) module.exports = FB;
 root.FB = FB;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
@@ -496,7 +634,7 @@ root.FB = FB;
 /* ===== 页面。动态内容一律 textContent / 建节点，不拼 HTML；不 console 打印 ===== */
 (function () {
 'use strict';
-const BUILD = '1126-2117';
+const BUILD = '1127-0900';
 const $ = id => document.getElementById(id);
 function el(tag, cls, ...kids) {
   const n = document.createElement(tag);
@@ -510,12 +648,15 @@ const isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel'
 const isAndroid = /Android/i.test(ua);
 const standalone = navigator.standalone === true || !!(window.matchMedia && matchMedia('(display-mode: standalone)').matches);
 const useShare = isIOS || isAndroid;
-const K_AUTH = 'fbx_auth', K_FAIL = 'fbx_fail', K_SEEN = 'fbx_seen';
+const K_AUTH = 'fbx_auth', K_FAIL = 'fbx_fail', K_SEEN = 'fbx_seen', K_DONE = 'fbx_done', K_SYNC = 'fbx_done_synced';
 const lsGet = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
 const lsDel = k => { try { localStorage.removeItem(k); } catch (e) {} };
 
 let client = null, items = [], seen = lsGet(K_SEEN) || {}, encBuf = null;
+let done = lsGet(K_DONE); if (!done || typeof done !== 'object' || Array.isArray(done)) done = {}; // 存过的：路径 → 时间
+let synced = lsGet(K_SYNC); if (!synced || typeof synced !== 'object' || Array.isArray(synced)) synced = {}; // 已经确认在仓库记录里的
+let recBusy = false, recAgain = false;
 const busy = {};            // path → 下载进度文字
 const cache = new Map();    // path → Blob（本次打开页面里下过的，省得「打开」后「下载」再下一遍）
 const tasks = [];           // 上传队列
@@ -672,6 +813,48 @@ async function loadList() {
   try { items = await client.list(); lastList = Date.now(); renderLists(); }
   catch (e) { banner('列表没刷出来：' + msgOf(e), loadList); }
   finally { $('refresh').disabled = false; $('refresh').textContent = '刷新'; }
+  syncRec();
+}
+/* 和仓库里的「已下载」记录对一次：远端有的并进本机；本机新存的写上去；
+   以前对上过、现在远端没了的（老师删了那一行）本机也删掉，文件回到首页。失败不打扰她，下次刷新再对 */
+async function syncRec() {
+  if (!client) return;
+  if (recBusy) { recAgain = true; return; }
+  recBusy = true;
+  let ok = false;
+  try {
+    do {
+      recAgain = false;
+      let all = (await client.readRec()).map, changed = false;
+      const extra = {};
+      for (const k of Object.keys(done)) {
+        if (all[k]) continue;
+        if (synced[k]) { delete done[k]; changed = true; } else extra[k] = done[k];
+      }
+      if (Object.keys(extra).length) all = await client.mergeRec(extra);
+      synced = {};
+      for (const k of Object.keys(all)) { synced[k] = 1; if (!done[k]) { done[k] = all[k]; changed = true; } }
+      lsSet(K_SYNC, synced);
+      if (changed) { lsSet(K_DONE, done); renderLists(); }
+    } while (recAgain);
+    ok = true;
+  } catch (e) { /* 没写上：本机记录还在，下次再写 */ }
+  finally { recBusy = false; if (!ok && recAgain) { recAgain = false; setTimeout(syncRec, 5000); } }
+}
+function markDone(it) {
+  markSeen(it);
+  if (done[it.path]) return;
+  const wasHome = !FB.isArchived(it, done, today());
+  done[it.path] = FB.nowStamp(new Date()); lsSet(K_DONE, done);
+  renderLists();
+  if (wasHome) toast('这个文件移到右下角「归档」里了。没存上的话，在那里再点「下载」。');
+  syncRec();
+}
+const today = () => FB.stamp(new Date()).day;
+let toastTm = 0;
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTm); toastTm = setTimeout(() => { t.hidden = true; }, 4500);
 }
 $('refresh').onclick = () => { hideBanner(); loadList(); };
 document.addEventListener('visibilitychange', () => {
@@ -681,31 +864,85 @@ function markSeen(it) {
   if (it.kind !== 'teacher' || seen[it.path]) return;
   seen[it.path] = 1; lsSet(K_SEEN, seen); renderLists();
 }
+function rowOf(it, withNew) {
+  const dl = el('button', 'dl', '下载');
+  dl.onclick = e => { e.stopPropagation(); save(it); };
+  const meta = busy[it.path] || [it.time, FB.fmtSize(it.size)].filter(Boolean).join(' · ');
+  // 行本身只是容器：「打开」区（role=button，可 Tab、回车/空格）和「下载」按钮并列，不嵌套
+  const open = el('div', 'open', el('div', 'ic', FB.extTag(it.name)),
+    el('div', 'mid', el('div', 'nm', withNew && FB.isNew(it, seen) ? el('span', 'new', '新') : null, it.name), el('div', 'meta', meta)));
+  open.setAttribute('role', 'button'); open.tabIndex = 0;
+  open.setAttribute('aria-label', '打开 ' + it.name);
+  open.onclick = () => openItem(it);
+  open.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openItem(it); } };
+  dl.setAttribute('aria-label', '下载 ' + it.name);
+  return el('div', 'row', open, dl);
+}
+function groupsOut(list, kind, withNew) {
+  const out = [];
+  for (const g of FB.groupItems(list, kind)) {
+    out.push(el('div', 'day', g.label));
+    out.push(el('div', 'list', g.items.map(it => rowOf(it, withNew))));
+  }
+  return out;
+}
 function renderLists() {
+  const td = today(), home = [], arc = [];
+  for (const it of items) (FB.isArchived(it, done, td) ? arc : home).push(it);
   for (const kind of ['teacher', 'mine']) {
-    const box = $(kind === 'teacher' ? 'l-teacher' : 'l-mine'), groups = FB.groupItems(items, kind);
-    if (!groups.length) { box.replaceChildren(el('div', 'empty', client && lastList ? (kind === 'teacher' ? '老师还没发文件。' : '还没交过文件。') : '正在读取…')); continue; }
-    const out = [];
-    for (const g of groups) {
-      out.push(el('div', 'day', g.label));
-      out.push(el('div', 'list', g.items.map(it => {
-        const dl = el('button', 'dl', '下载');
-        dl.onclick = e => { e.stopPropagation(); save(it); };
-        const meta = busy[it.path] || [it.time, FB.fmtSize(it.size)].filter(Boolean).join(' · ');
-        // 行本身只是容器：「打开」区（role=button，可 Tab、回车/空格）和「下载」按钮并列，不嵌套
-        const open = el('div', 'open', el('div', 'ic', FB.extTag(it.name)),
-          el('div', 'mid', el('div', 'nm', FB.isNew(it, seen) ? el('span', 'new', '新') : null, it.name), el('div', 'meta', meta)));
-        open.setAttribute('role', 'button'); open.tabIndex = 0;
-        open.setAttribute('aria-label', '打开 ' + it.name);
-        open.onclick = () => openItem(it);
-        open.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openItem(it); } };
-        dl.setAttribute('aria-label', '下载 ' + it.name);
-        return el('div', 'row', open, dl);
-      })));
+    const box = $(kind === 'teacher' ? 'l-teacher' : 'l-mine'), out = groupsOut(home, kind, true);
+    if (!out.length) {
+      const inArc = arc.some(it => it.kind === kind);
+      const msg = !(client && lastList) ? '正在读取…'
+        : kind === 'teacher' ? (inArc ? '发的文件都存过了，在右下角「归档」里。' : '老师还没发文件。')
+        : (inArc ? '最近 7 天没交过文件，以前的在右下角「归档」里。' : '还没交过文件。');
+      box.replaceChildren(el('div', 'empty', msg));
+      continue;
     }
     box.replaceChildren(...out);
   }
+  $('arc-cnt').textContent = arc.length ? String(arc.length) : '';
+  $('arc-btn').setAttribute('aria-label', '归档箱：存过的文件' + (arc.length ? '，' + arc.length + ' 个' : ''));
+  if (!$('arc').hidden) renderArc(arc);
 }
+
+/* ---- 归档箱 ---- */
+let aPushed = false;
+function renderArc(arc) {
+  if (!arc) { const td = today(); arc = items.filter(it => FB.isArchived(it, done, td)); }
+  const q = $('a-q').value.trim(), hit = q ? arc.filter(it => FB.matchItem(it, q)) : arc;
+  for (const kind of ['teacher', 'mine']) {
+    const out = groupsOut(hit, kind, false), box = $(kind === 'teacher' ? 'a-teacher' : 'a-mine');
+    $(kind === 'teacher' ? 'a-tcol' : 'a-mcol').hidden = !out.length && (!!q || !arc.some(it => it.kind === kind));
+    box.replaceChildren(...(out.length ? out : [el('div', 'empty', '没有。')]));
+  }
+  $('a-tcol').parentNode.classList.toggle('one', $('a-tcol').hidden || $('a-mcol').hidden);
+  $('a-hit').textContent = !arc.length ? (client && lastList ? '这里还是空的。在首页点「下载」存好的文件，会自动放到这里。' : '正在读取…')
+    : q ? (hit.length ? '找到 ' + hit.length + ' 个' : '没找到「' + q + '」。换个词，或者少打几个字试试。')
+    : '共 ' + arc.length + ' 个';
+}
+function openArc() {
+  renderArc();
+  $('arc').hidden = false;
+  document.body.style.overflow = 'hidden';
+  try { history.pushState({ fbxArc: 1 }, ''); aPushed = true; } catch (e) { aPushed = false; }
+}
+function closeArc(silent) {
+  if ($('arc').hidden) return;
+  $('arc').hidden = true;
+  if ($('viewer').hidden) document.body.style.overflow = '';
+  if (!silent && aPushed) { aPushed = false; try { history.back(); } catch (e) {} }
+}
+$('arc-btn').onclick = openArc;
+$('a-back').onclick = () => closeArc(false);
+$('a-q').oninput = () => renderArc();
+$('a-q').onkeydown = e => { if (e.key === 'Enter') e.target.blur(); }; // 回车收起键盘
+document.addEventListener('keydown', e => { // 外接键盘：Esc 关最上面一层
+  if (e.key !== 'Escape') return;
+  if (!$('sheet').hidden) $('sheet').hidden = true;
+  else if (!$('viewer').hidden) closeViewer(false);
+  else if (!$('arc').hidden) closeArc(false);
+});
 
 /* ---- 下载到内存 ---- */
 async function getBlob(it) {
@@ -787,18 +1024,22 @@ function openViewer(it) {
   $('v-dl').onclick = () => save(it);
   $('viewer').hidden = false;
   document.body.style.overflow = 'hidden';
-  try { history.pushState({ fbxViewer: 1 }, ''); vPushed = true; } catch (e) { vPushed = false; }
+  try { if (vPushed) history.replaceState({ fbxViewer: 1 }, ''); else { history.pushState({ fbxViewer: 1 }, ''); vPushed = true; } } catch (e) { vPushed = false; }
 }
 function closeViewer(silent) {
   if ($('viewer').hidden) return;
   $('viewer').hidden = true;
-  document.body.style.overflow = '';
+  if ($('arc').hidden) document.body.style.overflow = '';
   $('v-body').replaceChildren();
   if (vUrl) { URL.revokeObjectURL(vUrl); vUrl = ''; }
   if (!silent && vPushed) { vPushed = false; try { history.back(); } catch (e) {} }
 }
 $('v-back').onclick = () => closeViewer(false);
-window.addEventListener('popstate', () => { vPushed = false; closeViewer(true); }); // 左滑返回、安卓返回键也能关
+window.addEventListener('popstate', e => { // 左滑返回、安卓返回键：按回到的那一步对齐，那一步没有的层就关掉
+  const st = (e && e.state) || {};
+  if (!st.fbxViewer) { vPushed = false; closeViewer(true); }
+  if (!st.fbxViewer && !st.fbxArc) { aPushed = false; closeArc(true); }
+});
 
 /* ---- 下载：iPhone 优先系统分享（选「存储到文件」），不支持再 a[download] ---- */
 async function save(it, note) {
@@ -818,7 +1059,7 @@ function doSave(it, blob, fromSheet) {
     let ok = false;
     try { ok = navigator.canShare({ files: [file] }); } catch (e) {}
     if (ok) {
-      navigator.share({ files: [file] }).then(() => markSeen(it), e => {
+      navigator.share({ files: [file] }).then(() => markDone(it), e => {
         if (e && e.name === 'AbortError') return; // 取消：「新」留着
         if (e && e.name === 'NotAllowedError' && !fromSheet) return showSheet(it, blob);
         aDownload(it, blob);
@@ -833,7 +1074,7 @@ function aDownload(it, blob) {
   a.href = u; a.download = it.name; a.rel = 'noopener';
   document.body.append(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(u), 60000);
-  markSeen(it); // 浏览器接到下载动作
+  markDone(it); // 浏览器接到下载动作
 }
 function showSheet(it, blob, note) {
   $('sh-t').textContent = (note ? note + '\n' : '') + '「' + it.name + '」下载好了（' + FB.fmtSize(blob.size) + '）。点下面按钮，选「存储到文件」。';
