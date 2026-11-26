@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>文件</title>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="connect-src 'self' https://api.github.com http://127.0.0.1:* http://localhost:*">
+<meta name="theme-color" content="#f5f4f0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111315" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="文件">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
+<style>
+:root{
+  --bg:#f5f4f0;--card:#ffffff;--fg:#17181a;--sub:#6b6f76;--line:#e2e0da;
+  --acc:#2f4fd0;--acc-fg:#ffffff;--yes:#1f8a4c;--no:#d9480f;--new:#d9480f;--warn-bg:#fff3bf;--warn-fg:#5c4400;
+  --chip:#eef0f6;--photo-bg:#e8f2ee;--photo-fg:#306951;--badge:#bc3524;
+  color-scheme:light;
+  --ui:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Hiragino Sans","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#111315;--card:#1c1f23;--fg:#f2f1ed;--sub:#9aa0a8;--line:#2c3036;
+    --acc:#7c96ff;--acc-fg:#0d1020;--yes:#2f9e5b;--no:#e8622c;--new:#e8622c;--warn-bg:#4a3b00;--warn-fg:#ffe9a8;
+    --chip:#272b31;--photo-bg:#233a32;--photo-fg:#a1d8bd;--badge:#a83025;color-scheme:dark;}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--ui);-webkit-text-size-adjust:100%}
+body{line-height:1.45;touch-action:manipulation}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer;touch-action:manipulation}
+button:disabled{opacity:.45}
+.w{max-width:520px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 40px)}
+.scr{display:none}.scr.on{display:block}
+.center{min-height:80vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+#s-lock .center{max-width:360px;margin-inline:auto}
+.h1{font-size:26px;font-weight:700;margin:0 0 10px}
+.p{font-size:17px;line-height:1.65;color:var(--sub);margin:6px 0}
+.p b{color:var(--fg)}
+.btn{display:block;width:100%;min-height:52px;border-radius:16px;padding:14px 10px;font-size:20px;font-weight:700;
+  background:var(--acc);color:var(--acc-fg);text-align:center;margin-top:12px}
+.btn.ghost{background:var(--card);color:var(--fg);border:1px solid var(--line)}
+button:enabled:active,.up:active,.open:active{opacity:.76}
+:where(button,[role=button]):focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.open:focus-visible{outline-offset:-2px}
+input[type=text],input[type=password]{width:100%;font-size:20px;padding:14px 16px;border-radius:14px;border:1px solid var(--line);
+  background:var(--card);color:var(--fg);outline:none;margin-top:14px;min-height:52px}
+input[type=text]:focus,input[type=password]:focus{border-color:var(--acc)}
+.err{min-height:24px;font-size:15px;color:var(--no);margin-top:10px;text-align:center}
+#banner{display:none;position:fixed;z-index:60;left:0;right:0;top:0;background:#c92a2a;color:#fff;
+  font-size:15px;line-height:1.4;padding:calc(env(safe-area-inset-top) + 8px) 14px 8px;text-align:center}
+#banner.on{display:block;position:sticky;top:0;box-shadow:0 2px 6px #0002}
+#banner button{margin-left:10px;min-height:44px;padding:4px 14px;border:1px solid #fff;border-radius:8px;font-size:14px}
+/* 首页（照定样图） */
+.title{font-size:22px;font-weight:700;margin:0 0 12px;display:flex;justify-content:space-between;align-items:center}
+.rf{min-width:44px;min-height:44px;padding:0 12px;border-radius:12px;font-size:15px;font-weight:400;color:var(--sub);
+  border:1px solid var(--line);background:var(--card)}
+.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none}
+.up{display:block;width:100%;border:0;border-radius:18px;padding:22px 20px;text-align:left;background:var(--acc);color:var(--acc-fg);cursor:pointer}
+.up .t{font-size:26px;font-weight:700}.up .s{font-size:15px;line-height:1.5;margin-top:5px;opacity:.94}
+.prog{margin-top:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 14px}
+.task{padding:10px 0;border-top:1px solid var(--line);font-size:15px}
+.task:first-child{border-top:0}
+.task .l{display:flex;align-items:center;gap:10px}
+.task .n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task .st{flex:none;color:var(--sub);font-size:14px;font-variant-numeric:tabular-nums}
+.task.ok .st{color:var(--yes)}.task.bad .st{color:var(--no)}
+.task .e{overflow-wrap:anywhere;font-size:14px;color:var(--no);margin-top:4px}
+.task .rt{flex:none;min-width:64px;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-size:15px}
+.bar{height:6px;border-radius:3px;background:var(--chip);margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--acc)}
+h2{font-size:17px;margin:26px 2px 8px;display:flex;justify-content:space-between;align-items:baseline}
+h2 small{font-size:13px;color:var(--sub);font-weight:400}
+.day{font-size:13px;color:var(--sub);margin:12px 4px 6px}
+.list{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.empty{font-size:15px;color:var(--sub);padding:20px 16px;background:var(--card);border:1px solid var(--line);border-radius:16px}
+.row{display:flex;align-items:center;gap:12px;padding:13px 12px 13px 14px;border-top:1px solid var(--line);min-height:64px;}
+.row:first-child{border-top:0}
+.ic{flex:none;width:38px;height:38px;border-radius:10px;background:var(--chip);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--sub)}
+.open[aria-label$=".pdf" i] .ic{color:var(--acc)}
+.open:is([aria-label$=".jpg" i],[aria-label$=".jpeg" i],[aria-label$=".png" i],[aria-label$=".gif" i],[aria-label$=".webp" i],[aria-label$=".heic" i],[aria-label$=".heif" i]) .ic{
+  background:var(--photo-bg);color:var(--photo-fg)
+}
+.open{min-height:44px;border-radius:8px;flex:1;min-width:0;display:flex;align-items:center;gap:12px;align-self:stretch;cursor:pointer}
+.mid{flex:1;min-width:0}.nm{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{font-size:13px;color:var(--sub);margin-top:3px;font-variant-numeric:tabular-nums}
+.new{display:inline-block;line-height:1.4;font-size:12px;font-weight:700;color:#fff;background:var(--badge);border-radius:6px;padding:1px 6px;margin-right:6px;vertical-align:1px}
+.dl{flex:none;min-width:48px;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-size:14px;color:var(--fg)}
+.ver{font-size:11px;color:var(--sub);text-align:center;margin-top:28px;opacity:.75}
+/* 查看层 */
+#viewer{padding-bottom:env(safe-area-inset-bottom);position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column}
+.vbar{flex:none;display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top) + 6px) 10px 6px;
+  background:var(--card);border-bottom:1px solid var(--line)}
+.vbar .back{flex:none;min-width:64px;min-height:44px;font-size:17px;color:var(--acc);text-align:left;padding-left:4px}
+.vbar .dl{min-width:64px}
+.vname{font-weight:600;flex:1;min-width:0;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.vbody{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;position:relative}
+.vbody img{display:block;max-width:100%;max-height:100%;margin:auto;position:absolute;inset:0}
+.vbody img.full{max-width:none;max-height:none;position:static;margin:0}
+.vbody iframe{display:block;width:100%;height:100%;border:0;background:#fff}
+.vbody video,.vbody audio{display:block;width:100%;max-height:100%;margin:auto}
+.vtip{flex:none;font-size:13px;color:var(--sub);text-align:center;padding:8px 12px;
+  background:var(--card);border-top:1px solid var(--line)}
+/* 底部弹层 */
+#sheet{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.35);display:flex;align-items:flex-end;justify-content:center}
+#sheet .sh{width:100%;max-width:520px;background:var(--card);border-radius:18px 18px 0 0;padding:18px 16px calc(env(safe-area-inset-bottom) + 16px)}
+#sheet .sht{font-size:16px;line-height:1.5;word-break:break-all}
+.w,.vbar,#sheet .sh,#banner{
+  padding-inline-start:max(16px,env(safe-area-inset-left));
+  padding-inline-end:max(16px,env(safe-area-inset-right));
+}
+
+@media (min-width:640px){
+  .w{padding-top:calc(env(safe-area-inset-top) + 28px)}
+  h2{margin-top:32px}
+  .vbar{padding-inline:max(16px,calc((100% - 488px) / 2))}
+}
+</style>
+</head>
+<body>
+<div id="banner"></div>
+
+<section id="s-load" class="scr on"><div class="w"><div class="center">
+  <p class="p" id="load-msg">正在打开…</p>
+  <button class="btn ghost" id="load-retry" hidden style="max-width:260px">重试</button>
+</div></div></section>
+
+<section id="s-wx" class="scr"><div class="w"><div class="center">
+  <div class="h1">请用 Safari 打开</div>
+  <p class="p">点右上角 <b>···</b>，选<b>「在浏览器打开」</b>。</p>
+  <p class="p">微信里打开传不了文件。</p>
+</div></div></section>
+
+<section id="s-lock" class="scr"><div class="w"><div class="center" style="align-items:stretch">
+  <div class="h1">输入口令</div>
+  <p class="p">老师给的口令，这台手机只用输一次。</p>
+  <input id="pw" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="口令">
+  <div class="err" id="pw-err"></div>
+  <button class="btn" id="pw-ok">进入</button>
+</div></div></section>
+
+<section id="s-home" class="scr"><div class="w">
+  <div class="title"><span>文件柜</span><button class="rf" id="refresh">刷新</button></div>
+  <input type="file" id="file" multiple class="vh" tabindex="-1">
+  <label class="up" for="file" id="up-btn"><div class="t">上传文件</div><div class="s">作业照片、PDF 都行，可以一次选好几个</div></label>
+  <div class="prog" id="tasks" hidden></div>
+
+  <h2>老师发的 <small>点一下打开</small></h2>
+  <div id="l-teacher"></div>
+  <h2>我交的 <small>老师能看到</small></h2>
+  <div id="l-mine"></div>
+  <div class="ver" id="ver"></div>
+</div></section>
+
+<div id="viewer" hidden>
+  <div class="vbar"><button class="back" id="v-back">‹ 返回</button><div class="vname" id="v-name"></div><button class="dl" id="v-dl">下载</button></div>
+  <div class="vbody" id="v-body"></div>
+  <div class="vtip" id="v-tip" hidden></div>
+</div>
+
+<div id="sheet" hidden><div class="sh">
+  <div class="sht" id="sh-t"></div>
+  <button class="btn" id="sh-ok">存到手机</button>
+  <button class="btn ghost" id="sh-x">取消</button>
+</div></div>
+
+<script id="core">
+/* ===== 纯逻辑（node 测试直接取这一段跑）。这里不碰 DOM、不打印任何东西 ===== */
+(function (root) {
+'use strict';
+const API = 'https://api.github.com';
+const CHUNK = 30 * 1024 * 1024;          // 单文件 ≤ 30MB 直接传；更大的切成 30MB 一块
+const MAX_TOTAL = 150 * 1024 * 1024;     // 总大小上限
+const ITER_MIN = 100000, ITER_MAX = 5000000;
+const DIRS = { teacher: '发给妹妹', mine: '交卷' };
+
+/* API 地址写死；只有页面本身跑在 localhost/127.0.0.1 上，才认 ?api=http://127.0.0.1:端口 换成本地打桩 */
+function apiBase(loc) {
+  try {
+    const h = loc && loc.hostname;
+    if (h === 'localhost' || h === '127.0.0.1') {
+      const v = new URLSearchParams((loc && loc.search) || '').get('api');
+      if (v && /^http:\/\/(127\.0\.0\.1|localhost):\d{1,5}$/.test(v)) return v;
+    }
+  } catch (e) {}
+  return API;
+}
+
+const enc = new TextEncoder();
+const u8len = s => enc.encode(s).length;
+function splitExt(name) {
+  const i = name.lastIndexOf('.');
+  if (i > 0 && name.length - i <= 11 && !/\s/.test(name.slice(i))) return [name.slice(0, i), name.slice(i)];
+  return [name, ''];
+}
+/* 文件名清洗：去掉 / \ 和控制字符、方向控制符，去掉开头结尾的点和空白，保留后缀，限 180 字节 */
+function sanitizeName(name) {
+  let s = String(name == null ? '' : name);
+  try { s = s.normalize('NFC'); } catch (e) {}
+  s = s.replace(/[\/\\]/g, '_')
+    .replace(/[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u2028-\u202e\u2066-\u2069\ufeff]/g, '')
+    .replace(/\s+/g, ' ')
+    .replace(/^[\s.]+/, '').replace(/[\s.]+$/, '');
+  s = s.replace(/\.parts\.json$/i, '_parts.json').replace(/\.part(\d+)$/i, '_part$1'); // 分块用的后缀留给系统
+  if (!s) s = '文件';
+  if (u8len(s) > 180) {
+    let [stem, ext] = splitExt(s);
+    if (u8len(ext) > 40) ext = '';
+    const cps = Array.from(stem);
+    while (cps.length && u8len(cps.join('') + ext) > 180) cps.pop();
+    s = (cps.join('') || '文件') + ext;
+  }
+  return s;
+}
+/* 同名已存在：在原名后、后缀前加 _2、_3 */
+function uniqueName(name, taken) {
+  if (!taken.has(name)) return name;
+  const [stem, ext] = splitExt(name);
+  for (let k = 2; ; k++) { const n = stem + '_' + k + ext; if (!taken.has(n)) return n; }
+}
+const p2 = n => String(n).padStart(2, '0');
+function stamp(d) { // 上传设备本地时间
+  return { day: d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()), hhmm: p2(d.getHours()) + p2(d.getMinutes()) };
+}
+const encPath = p => p.split('/').map(encodeURIComponent).join('/');
+
+/* 仓库树 → 列表项。分块文件（x.parts.json + x.part01…）合成一项；没有清单的散块不显示 */
+const ITEM_RE = /^(交卷|发给妹妹)\/(\d{4}-\d{2}-\d{2})\/([^/]+)$/;
+const PART_RE = /\.part\d{2,3}$/;
+function parseTree(entries) {
+  const files = new Map();
+  for (const e of entries || []) if (e && e.type === 'blob' && typeof e.path === 'string') files.set(e.path, { size: +e.size || 0, sha: e.sha || '' });
+  const items = [];
+  for (const [path, f] of files) {
+    const m = path.match(ITEM_RE);
+    if (!m) continue;
+    const top = m[1], day = m[2], fname = m[3];
+    let base = fname, manifest = null, parts = null, size = f.size;
+    if (/\.parts\.json$/.test(fname)) {
+      base = fname.slice(0, -11);
+      if (!base) continue;
+      manifest = path; parts = []; size = 0;
+      const pre = top + '/' + day + '/' + base + '.part';
+      for (const [q, g] of files) if (q.startsWith(pre) && /^\d{2,3}$/.test(q.slice(pre.length))) { parts.push(q); size += g.size; }
+      parts.sort();
+    } else if (PART_RE.test(fname)) continue;
+    const t = base.match(/^(\d{2})(\d{2})_(.+)$/);
+    items.push({ path: top + '/' + day + '/' + base, kind: top === DIRS.teacher ? 'teacher' : 'mine', day: day, base: base,
+      name: t ? t[3] : base, time: t ? t[1] + ':' + t[2] : '', size: size, manifest: manifest, parts: parts });
+  }
+  return { items: items, files: files };
+}
+const WK = '日一二三四五六';
+function dayLabel(day) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(day);
+  if (!m) return day;
+  const w = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).getUTCDay();
+  return (+m[2]) + '月' + (+m[3]) + '日 周' + WK[w];
+}
+/* 按日期分组倒序，组内按时间（文件名前缀 HHMM）倒序 */
+function groupItems(items, kind) {
+  const by = new Map();
+  for (const it of items) if (it.kind === kind) { if (!by.has(it.day)) by.set(it.day, []); by.get(it.day).push(it); }
+  return Array.from(by.keys()).sort().reverse().map(day => ({
+    day: day, label: dayLabel(day),
+    items: by.get(day).sort((a, b) => a.base < b.base ? 1 : a.base > b.base ? -1 : 0),
+  }));
+}
+function fmtSize(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1024 * 1024) return Math.max(1, Math.round(n / 1024)) + ' KB';
+  return (n / 1048576).toFixed(1) + ' MB';
+}
+const extOf = name => { const e = splitExt(name)[1]; return e ? e.slice(1).toLowerCase() : ''; };
+function extTag(name) { const e = extOf(name); return !e ? '文件' : e.length <= 4 ? e.toUpperCase() : 'FILE'; }
+/* 打开看只认这张白名单（blob 的 type 也只用这些）；HTML、SVG、XML、XHTML、脚本等会执行代码的类型和其它没列的，
+   一律 application/octet-stream 只走下载，不在本站源下用 blob 网址打开 */
+const MIME = { pdf: 'application/pdf', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif', webp: 'image/webp',
+  heic: 'image/heic', heif: 'image/heif', bmp: 'image/bmp', txt: 'text/plain;charset=utf-8', md: 'text/plain;charset=utf-8',
+  csv: 'text/plain;charset=utf-8', json: 'text/plain;charset=utf-8', mp4: 'video/mp4', mov: 'video/quicktime', m4v: 'video/mp4',
+  mp3: 'audio/mpeg', m4a: 'audio/mp4', wav: 'audio/wav', aac: 'audio/aac' };
+const mimeOf = name => { const e = extOf(name); return Object.prototype.hasOwnProperty.call(MIME, e) ? MIME[e] : 'application/octet-stream'; };
+function kindOf(name) {
+  const m = mimeOf(name);
+  if (m === 'application/pdf') return 'pdf';
+  if (m.startsWith('image/')) return 'image';
+  if (m.startsWith('video/')) return 'video';
+  if (m.startsWith('audio/')) return 'audio';
+  if (m.startsWith('text/')) return 'text';
+  return 'other';
+}
+/* 口令连续输错 n 次后，下一次要等几秒（只防手动乱试；真正的防线是 PBKDF2 次数） */
+function lockWait(n) { return n < 3 ? 0 : n === 3 ? 5 : n === 4 ? 15 : n === 5 ? 30 : 60; }
+/* 「新」只标在老师发的、本机还没打开或下载过的 */
+const isNew = (it, seen) => it.kind === 'teacher' && !(seen && seen[it.path]);
+
+/* ---- 编码、摘要 ---- */
+const hex = u8 => Array.from(u8, b => b.toString(16).padStart(2, '0')).join('');
+const unhex = s => new Uint8Array((String(s).match(/../g) || []).map(h => parseInt(h, 16)));
+function b64(u8) {
+  let s = '';
+  for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+const subtle = () => { const s = root.crypto && root.crypto.subtle; if (!s) throw new Error('NOCRYPTO'); return s; };
+async function sha256hex(u8) { return hex(new Uint8Array(await subtle().digest('SHA-256', u8))); }
+async function gitSha(u8) { // git 的 blob sha1，和仓库树里的 sha 比对，判断远端那份是不是同一个文件
+  const h = enc.encode('blob ' + u8.length + '\0'), all = new Uint8Array(h.length + u8.length);
+  all.set(h, 0); all.set(u8, h.length);
+  return hex(new Uint8Array(await subtle().digest('SHA-1', all)));
+}
+
+/* ---- 解密 box.enc：'FBX1' | 次数(4 字节大端) | salt(16) | iv(12) | 密文+tag ----
+   auth = {pw} 用口令算；或 {salt, iter, key} 用记住的密钥（salt、次数对不上抛 STALE） */
+async function decryptBox(buf, auth) {
+  const u8 = new Uint8Array(buf), s = subtle();
+  if (u8.length < 53 || String.fromCharCode(u8[0], u8[1], u8[2], u8[3]) !== 'FBX1') throw new Error('BADFILE');
+  const iter = u8[4] * 16777216 + (u8[5] << 16) + (u8[6] << 8) + u8[7];
+  if (iter < ITER_MIN || iter > ITER_MAX) throw new Error('BADFILE');
+  const salt = u8.slice(8, 24), iv = u8.slice(24, 36), ct = u8.slice(36), saltHex = hex(salt);
+  let keyRaw;
+  if (auth && auth.key) {
+    if (auth.salt !== saltHex || auth.iter !== iter) throw new Error('STALE');
+    keyRaw = unhex(auth.key);
+  } else {
+    const base = await s.importKey('raw', enc.encode((auth && auth.pw) || ''), 'PBKDF2', false, ['deriveBits']);
+    keyRaw = new Uint8Array(await s.deriveBits({ name: 'PBKDF2', salt: salt, iterations: iter, hash: 'SHA-256' }, base, 256));
+  }
+  const key = await s.importKey('raw', keyRaw, 'AES-GCM', false, ['decrypt']);
+  let plain;
+  try { plain = await s.decrypt({ name: 'AES-GCM', iv: iv }, key, ct); }
+  catch (e) { throw new Error(auth && auth.key ? 'STALE' : 'BADPW'); }
+  let cfg;
+  try { cfg = JSON.parse(new TextDecoder().decode(plain)); } catch (e) { throw new Error('BADFILE'); }
+  if (!cfg || typeof cfg.token !== 'string' || !cfg.token || typeof cfg.repo !== 'string' || !/^[\w.-]+\/[\w.-]+$/.test(cfg.repo)) throw new Error('BADFILE');
+  return { cfg: { repo: cfg.repo, token: cfg.token }, auth: { salt: saltHex, iter: iter, key: hex(keyRaw) } };
+}
+
+/* ---- 出错：只带代码和状态号，不带网址、钥匙 ---- */
+function apiErr(code, status) { const e = new Error(code); e.status = status || 0; return e; }
+function statusErr(st) {
+  return apiErr(st === 401 ? 'AUTH' : st === 403 || st === 429 ? 'DENY' : st === 404 ? 'GONE' : 'HTTP', st);
+}
+
+/* ---- GitHub 客户端。req({method,url,headers,body,type:'text'|'buf',onProgress}) → {status,text|buf}，网络错就抛 ---- */
+class Client {
+  constructor(o) {
+    this.repo = o.repo; this.token = o.token; this.api = o.api || API; this.req = o.req;
+    this.b64 = o.b64 || (async u8 => b64(u8));
+    this.readBuf = o.readBuf || (blob => blob.arrayBuffer());
+    this.sleep = o.sleep || (ms => new Promise(r => setTimeout(r, ms)));
+    this.delays = o.delays || [1000, 3000, 6000];
+    this.files = null; // 仓库树缓存：path → {size, sha}
+  }
+  _headers(raw) {
+    return { 'Authorization': 'Bearer ' + this.token, 'Accept': raw ? 'application/vnd.github.raw' : 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28' };
+  }
+  _url(path) { return this.api + '/repos/' + this.repo + '/contents/' + encPath(path); }
+  /* 网络断、5xx、PUT 的 409（GitHub 连着提交时偶发）重试几次 */
+  async _call(o) {
+    for (let i = 0; ; i++) {
+      let r = null;
+      try { r = await this.req(o); } catch (e) { r = null; }
+      const st = r ? r.status : 0;
+      const again = !r || st >= 500 || (st === 409 && o.method === 'PUT');
+      if (!again || i >= this.delays.length) { if (!r) throw apiErr('NET'); return r; }
+      await this.sleep(this.delays[i]);
+    }
+  }
+  async list() {
+    const r = await this._call({ method: 'GET', url: this.api + '/repos/' + this.repo + '/git/trees/HEAD?recursive=1', headers: this._headers(false), type: 'text' });
+    if (r.status === 409) { this.files = new Map(); return []; } // 空仓库
+    if (r.status === 404) { // 再查仓库本身：查不到就是钥匙失效或没权限；仓库在也不当空柜（不清已有列表），只说暂时读不到
+      const g = await this._call({ method: 'GET', url: this.api + '/repos/' + this.repo, headers: this._headers(false), type: 'text' });
+      if (g.status === 200) throw apiErr('NOTREE', 404);
+      if (g.status === 404 || g.status === 401 || g.status === 403) throw apiErr('NOREPO', g.status);
+      throw statusErr(g.status);
+    }
+    if (r.status !== 200) throw statusErr(r.status);
+    let j;
+    try { j = JSON.parse(r.text); } catch (e) { throw apiErr('HTTP', r.status); }
+    const t = parseTree(j.tree);
+    this.files = t.files;
+    return t.items;
+  }
+  async getRaw(path, onProgress) {
+    const r = await this._call({ method: 'GET', url: this._url(path), headers: this._headers(true), type: 'buf', onProgress: onProgress });
+    if (r.status !== 200) throw statusErr(r.status);
+    return r.buf instanceof Uint8Array ? r.buf : new Uint8Array(r.buf);
+  }
+  /* 下载：返回 Uint8Array 数组（分块文件按序、逐块校验 sha256 和大小） */
+  async download(it, onProgress) {
+    const prog = onProgress || (() => {});
+    if (!it.manifest) {
+      const b = await this.getRaw(it.path, l => prog(l, it.size));
+      return [b];
+    }
+    let m;
+    try { m = JSON.parse(new TextDecoder().decode(await this.getRaw(it.manifest))); } catch (e) { if (e && e.status) throw e; throw apiErr('BADSUM'); }
+    const dir = it.path.slice(0, it.path.lastIndexOf('/') + 1);
+    if (!m || !Array.isArray(m.parts) || !m.parts.length || typeof m.size !== 'number') throw apiErr('BADSUM');
+    const out = [];
+    let done = 0;
+    for (const p of m.parts) {
+      if (!p || typeof p.name !== 'string' || p.name.indexOf(it.base + '.part') !== 0 || !/^\d{2,3}$/.test(p.name.slice(it.base.length + 5))) throw apiErr('BADSUM');
+      const b = await this.getRaw(dir + p.name, l => prog(done + l, m.size));
+      if (b.length !== p.size || (p.sha256 && await sha256hex(b) !== p.sha256)) throw apiErr('BADSUM');
+      out.push(b); done += b.length;
+    }
+    if (done !== m.size) throw apiErr('BADSUM');
+    return out;
+  }
+  _taken(dir) { // 这一天目录里已经用掉的名字（分块文件按合并后的名字算）
+    const t = new Set();
+    for (const p of this.files.keys()) {
+      if (p.indexOf(dir) !== 0) continue;
+      const f = p.slice(dir.length);
+      if (f.indexOf('/') >= 0) continue;
+      t.add(f.replace(/\.parts\.json$/, '').replace(PART_RE, ''));
+    }
+    return t;
+  }
+  /* 写一个文件；远端已有同一份（git sha 一样）算成功；远端有别的文件占了这个名字返回 'taken' */
+  async _put(path, u8, onProgress) {
+    const seg = typeof path === 'string' ? path.split('/') : []; // 网页只往 交卷/ 写；按段核：段不能空、不能是 . 或 ..（名字里的 .. 照常）
+    if (seg.length < 2 || seg[0] !== DIRS.mine || seg.some(x => x === '' || x === '.' || x === '..')) throw apiErr('BADPATH');
+    const gsha = await gitSha(u8), have = this.files.get(path);
+    if (have) return have.sha === gsha ? 'ok' : 'taken';
+    const body = '{"message":' + JSON.stringify('upload ' + path.split('/').pop()) + ',"content":"' + await this.b64(u8) + '"}';
+    const r = await this._call({ method: 'PUT', url: this._url(path), headers: Object.assign(this._headers(false), { 'Content-Type': 'application/json' }),
+      body: body, type: 'text', onProgress: onProgress ? (l, t) => onProgress(t ? Math.min(u8.length, Math.round(u8.length * l / t)) : 0) : null });
+    if (r.status === 201 || r.status === 200) { this.files.set(path, { size: u8.length, sha: gsha }); return 'ok'; }
+    if (r.status === 422) {
+      if (/too large/i.test(r.text || '')) throw apiErr('TOOBIG', 422);
+      await this.list(); // 可能上一次其实传上了，核实一下
+      const h = this.files.get(path);
+      if (h) return h.sha === gsha ? 'ok' : 'taken';
+      throw apiErr('HTTP', 422);
+    }
+    throw statusErr(r.status);
+  }
+  /* 上传。task = {file(Blob), clean(清洗后的名字), top('交卷'等), day, hhmm, base?}；base 第一次定下就留在 task 上，重试接着用
+     onProgress(已传字节, 总字节, 第几块, 共几块)。返回仓库路径 */
+  async upload(task, onProgress) {
+    const f = task.file, size = f.size, prog = onProgress || (() => {});
+    if (task.top !== DIRS.mine || !/^\d{4}-\d{2}-\d{2}$/.test(String(task.day)) || !/^\d{4}$/.test(String(task.hhmm))) throw apiErr('BADPATH');
+    if (size > MAX_TOTAL) throw apiErr('TOOBIG');
+    if (!this.files) await this.list();
+    const dir = task.top + '/' + task.day + '/';
+    if (size <= CHUNK) {
+      const u8 = new Uint8Array(await this.readBuf(f));
+      for (let i = 0; i < 50; i++) {
+        if (!task.base) task.base = uniqueName(task.hhmm + '_' + task.clean, this._taken(dir));
+        const r = await this._put(dir + task.base, u8, l => prog(l, size, 1, 1));
+        if (r === 'ok') { prog(size, size, 1, 1); return dir + task.base; }
+        task.base = null; // 名字被占了，换 _2、_3
+      }
+      throw apiErr('HTTP', 422);
+    }
+    if (!task.base) task.base = uniqueName(task.hhmm + '_' + task.clean, this._taken(dir));
+    const n = Math.ceil(size / CHUNK);
+    if (!task.sha256) task.sha256 = await sha256hex(new Uint8Array(await this.readBuf(f)));
+    const parts = [];
+    let done = 0;
+    for (let i = 0; i < n; i++) {
+      const u8 = new Uint8Array(await this.readBuf(f.slice(i * CHUNK, Math.min(size, (i + 1) * CHUNK))));
+      const name = task.base + '.part' + p2(i + 1);
+      const ps = await sha256hex(u8);
+      const r = await this._put(dir + name, u8, l => prog(done + l, size, i + 1, n));
+      if (r !== 'ok') throw apiErr('HTTP', 422);
+      parts.push({ name: name, size: u8.length, sha256: ps });
+      done += u8.length;
+      prog(done, size, i + 1, n);
+    }
+    const man = enc.encode(JSON.stringify({ v: 1, name: task.base, size: size, sha256: task.sha256, chunk: CHUNK, parts: parts }, null, 1) + '\n');
+    const r = await this._put(dir + task.base + '.parts.json', man);
+    if (r !== 'ok') throw apiErr('HTTP', 422);
+    return dir + task.base;
+  }
+}
+
+const FB = { API, CHUNK, MAX_TOTAL, DIRS, apiBase, sanitizeName, splitExt, uniqueName, stamp, encPath, parseTree, dayLabel, groupItems,
+  fmtSize, extTag, mimeOf, kindOf, lockWait, isNew, hex, unhex, b64, sha256hex, gitSha, decryptBox, Client };
+if (typeof module !== 'undefined' && module.exports) module.exports = FB;
+root.FB = FB;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+</script>
+
+<script id="app">
+/* ===== 页面。动态内容一律 textContent / 建节点，不拼 HTML；不 console 打印 ===== */
+(function () {
+'use strict';
+const BUILD = '1126-2117';
+const $ = id => document.getElementById(id);
+function el(tag, cls, ...kids) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  for (const k of kids.flat(Infinity)) if (k != null && k !== false) n.append(k.nodeType ? k : String(k));
+  return n;
+}
+const ua = navigator.userAgent || '';
+const isWx = /MicroMessenger/i.test(ua);
+const isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isAndroid = /Android/i.test(ua);
+const standalone = navigator.standalone === true || !!(window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+const useShare = isIOS || isAndroid;
+const K_AUTH = 'fbx_auth', K_FAIL = 'fbx_fail', K_SEEN = 'fbx_seen';
+const lsGet = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+const lsDel = k => { try { localStorage.removeItem(k); } catch (e) {} };
+
+let client = null, items = [], seen = lsGet(K_SEEN) || {}, encBuf = null;
+const busy = {};            // path → 下载进度文字
+const cache = new Map();    // path → Blob（本次打开页面里下过的，省得「打开」后「下载」再下一遍）
+const tasks = [];           // 上传队列
+let running = false, lastList = 0, idSeq = 0;
+
+function show(name) { document.querySelectorAll('.scr').forEach(s => s.classList.toggle('on', s.id === 's-' + name)); }
+function banner(msg, retry) {
+  const b = $('banner');
+  b.replaceChildren(el('span', '', msg));
+  if (retry) { const r = el('button', '', '重试'); r.onclick = () => { hideBanner(); retry(); }; b.append(r); }
+  const x = el('button', '', '关'); x.onclick = hideBanner; b.append(x);
+  b.classList.add('on');
+}
+function hideBanner() { const b = $('banner'); b.classList.remove('on'); b.replaceChildren(); }
+function msgOf(e) {
+  const c = e && e.message;
+  if (c === 'AUTH') return '钥匙失效了，告诉老师。';
+  if (c === 'NOREPO') return '钥匙失效或没权限，请告诉老师。';
+  if (c === 'NOTREE') return '暂时读不到文件，稍后刷新。';
+  if (c === 'BADPATH') return '上传位置不对，告诉老师。';
+  if (c === 'DENY') return '没有权限或请求太多，过几分钟再试；一直这样就告诉老师。';
+  if (c === 'NET') return '网络不好，没连上。';
+  if (c === 'TOOBIG') return '文件太大，请压缩或分开传。';
+  if (c === 'BADSUM') return '下载的文件不完整，再试一次。';
+  if (c === 'GONE') return '这个文件已经不在了，点「刷新」。';
+  if (c === 'NOCRYPTO') return '这个浏览器不支持，请用 Safari 打开。';
+  return '出错了' + (e && e.status ? '（' + e.status + '）' : '') + '，再试一次；不行告诉老师。';
+}
+
+/* ---- 网络：GET 用 fetch（不走缓存，下载带进度），PUT 用 XHR（要上传进度） ---- */
+function req(o) { return o.method === 'GET' ? fetchReq(o) : xhrReq(o); }
+async function fetchReq(o) {
+  const ac = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  let tm = 0;
+  const kick = () => { clearTimeout(tm); tm = setTimeout(() => { if (ac) ac.abort(); }, 60000); }; // 60 秒没动静就断
+  kick();
+  try {
+    const r = await fetch(o.url, { method: o.method, headers: o.headers, cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer', signal: ac ? ac.signal : undefined });
+    if (o.type !== 'buf' || r.status !== 200) return { status: r.status, text: await r.text() };
+    if (!r.body || !r.body.getReader) { const b = new Uint8Array(await r.arrayBuffer()); if (o.onProgress) o.onProgress(b.length); return { status: 200, buf: b }; }
+    const rd = r.body.getReader(), chunks = [];
+    let n = 0;
+    for (;;) {
+      const x = await rd.read();
+      if (x.done) break;
+      kick(); chunks.push(x.value); n += x.value.length;
+      if (o.onProgress) o.onProgress(n);
+    }
+    const all = new Uint8Array(n);
+    let off = 0;
+    for (const c of chunks) { all.set(c, off); off += c.length; }
+    return { status: 200, buf: all };
+  } finally { clearTimeout(tm); }
+}
+function xhrReq(o) {
+  return new Promise((ok, no) => {
+    const x = new XMLHttpRequest();
+    x.open(o.method, o.url);
+    for (const k in o.headers) x.setRequestHeader(k, o.headers[k]);
+    x.timeout = 15 * 60 * 1000;
+    if (o.onProgress && x.upload) x.upload.onprogress = e => { if (e.lengthComputable) o.onProgress(e.loaded, e.total); };
+    x.onload = () => ok({ status: x.status, text: x.responseText });
+    x.onerror = x.ontimeout = x.onabort = () => no(new Error('NET'));
+    x.send(o.body);
+  });
+}
+function readB64(u8) { // 用浏览器自带的 FileReader 转 base64，比 JS 循环快、省内存
+  return new Promise((ok, no) => {
+    const fr = new FileReader();
+    fr.onload = () => { const s = String(fr.result); ok(s.slice(s.indexOf(',') + 1)); };
+    fr.onerror = () => no(new Error('READ'));
+    fr.readAsDataURL(new Blob([u8]));
+  });
+}
+
+/* ---- 启动、口令 ---- */
+async function fetchEnc() {
+  const r = await fetch('box.enc', { cache: 'no-cache' });
+  if (!r.ok) throw new Error('HTTP');
+  return r.arrayBuffer();
+}
+async function boot() {
+  $('ver').textContent = BUILD;
+  if (isWx) return show('wx');
+  const saved = lsGet(K_AUTH);
+  if (!saved || !saved.key) return showLock('');
+  show('load'); $('load-msg').textContent = '正在打开…'; $('load-retry').hidden = true;
+  try { encBuf = await fetchEnc(); }
+  catch (e) { $('load-msg').textContent = '没连上网，检查网络后点「重试」。'; $('load-retry').hidden = false; return; }
+  try { const r = await FB.decryptBox(encBuf, saved); return start(r.cfg); }
+  catch (e) {
+    if (e && e.message === 'NOCRYPTO') return showLock('这个浏览器不支持解密（要 https），请用 Safari 打开。');
+    lsDel(K_AUTH);
+    return showLock(e && e.message === 'STALE' ? '口令换过了，请输入老师给的新口令。' : '');
+  }
+}
+$('load-retry').onclick = boot;
+
+let cdTimer = 0;
+function failState() { const s = lsGet(K_FAIL); return s && typeof s.n === 'number' ? s : { n: 0, until: 0 }; }
+function showLock(msg) {
+  show('lock');
+  $('pw-err').textContent = msg || '';
+  tickLock();
+}
+function tickLock() { // 输错太多次的倒计时
+  clearInterval(cdTimer);
+  const upd = () => {
+    const left = Math.ceil((failState().until - Date.now()) / 1000);
+    if (left > 0) { $('pw-ok').disabled = true; $('pw-ok').textContent = '请等 ' + left + ' 秒'; }
+    else { clearInterval(cdTimer); $('pw-ok').disabled = false; $('pw-ok').textContent = '进入'; }
+  };
+  upd();
+  if ($('pw-ok').disabled) cdTimer = setInterval(upd, 250);
+}
+async function tryPw() {
+  const v = $('pw').value.trim();
+  if (!v || $('pw-ok').disabled) return;
+  if (failState().until > Date.now()) return tickLock();
+  $('pw-ok').disabled = true; $('pw-ok').textContent = '正在打开…'; $('pw-err').textContent = '';
+  try {
+    if (!encBuf) encBuf = await fetchEnc();
+  } catch (e) { $('pw-err').textContent = '没连上网，检查网络后再点「进入」。'; return tickLock(); }
+  try {
+    const r = await FB.decryptBox(encBuf, { pw: v });
+    lsDel(K_FAIL); lsSet(K_AUTH, r.auth);
+    $('pw').value = '';
+    return start(r.cfg);
+  } catch (e) {
+    const m = e && e.message;
+    if (m === 'BADPW') {
+      const s = failState(); s.n++;
+      const w = FB.lockWait(s.n); s.until = w ? Date.now() + w * 1000 : 0;
+      lsSet(K_FAIL, s);
+      $('pw-err').textContent = w ? '口令不对。输错好几次了，等一会再试。' : '口令不对，再试一次。';
+    } else if (m === 'NOCRYPTO') $('pw-err').textContent = '这个浏览器不支持解密（要 https），请用 Safari 打开。';
+    else { encBuf = null; $('pw-err').textContent = '文件有问题，检查网络后重试，不行告诉老师。'; }
+    tickLock();
+  }
+}
+$('pw-ok').onclick = tryPw;
+$('pw').onkeydown = e => { if (e.key === 'Enter') tryPw(); };
+
+function start(cfg) {
+  client = new FB.Client({ repo: cfg.repo, token: cfg.token, api: FB.apiBase(location), req: req, b64: readB64 });
+  show('home');
+  renderLists();
+  loadList();
+}
+
+/* ---- 列表 ---- */
+async function loadList() {
+  $('refresh').disabled = true; $('refresh').textContent = '刷新中';
+  try { items = await client.list(); lastList = Date.now(); renderLists(); }
+  catch (e) { banner('列表没刷出来：' + msgOf(e), loadList); }
+  finally { $('refresh').disabled = false; $('refresh').textContent = '刷新'; }
+}
+$('refresh').onclick = () => { hideBanner(); loadList(); };
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && client && !running && Date.now() - lastList > 60000) loadList();
+});
+function markSeen(it) {
+  if (it.kind !== 'teacher' || seen[it.path]) return;
+  seen[it.path] = 1; lsSet(K_SEEN, seen); renderLists();
+}
+function renderLists() {
+  for (const kind of ['teacher', 'mine']) {
+    const box = $(kind === 'teacher' ? 'l-teacher' : 'l-mine'), groups = FB.groupItems(items, kind);
+    if (!groups.length) { box.replaceChildren(el('div', 'empty', client && lastList ? (kind === 'teacher' ? '老师还没发文件。' : '还没交过文件。') : '正在读取…')); continue; }
+    const out = [];
+    for (const g of groups) {
+      out.push(el('div', 'day', g.label));
+      out.push(el('div', 'list', g.items.map(it => {
+        const dl = el('button', 'dl', '下载');
+        dl.onclick = e => { e.stopPropagation(); save(it); };
+        const meta = busy[it.path] || [it.time, FB.fmtSize(it.size)].filter(Boolean).join(' · ');
+        // 行本身只是容器：「打开」区（role=button，可 Tab、回车/空格）和「下载」按钮并列，不嵌套
+        const open = el('div', 'open', el('div', 'ic', FB.extTag(it.name)),
+          el('div', 'mid', el('div', 'nm', FB.isNew(it, seen) ? el('span', 'new', '新') : null, it.name), el('div', 'meta', meta)));
+        open.setAttribute('role', 'button'); open.tabIndex = 0;
+        open.setAttribute('aria-label', '打开 ' + it.name);
+        open.onclick = () => openItem(it);
+        open.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openItem(it); } };
+        dl.setAttribute('aria-label', '下载 ' + it.name);
+        return el('div', 'row', open, dl);
+      })));
+    }
+    box.replaceChildren(...out);
+  }
+}
+
+/* ---- 下载到内存 ---- */
+async function getBlob(it) {
+  if (cache.has(it.path)) return cache.get(it.path);
+  if (busy[it.path]) throw new Error('BUSY');
+  busy[it.path] = '下载中 0%'; renderLists();
+  try {
+    const parts = await client.download(it, (l, t) => {
+      const s = '下载中 ' + (t ? Math.min(100, Math.floor(l * 100 / t)) : 0) + '%';
+      if (busy[it.path] !== s) { busy[it.path] = s; renderLists(); }
+    });
+    const blob = new Blob(parts, { type: FB.mimeOf(it.name) });
+    cache.set(it.path, blob);
+    let tot = 0; for (const b of cache.values()) tot += b.size; // 本次页面里最多留约 300MB
+    for (const k of cache.keys()) { if (tot <= 300 * 1048576 || k === it.path) break; tot -= cache.get(k).size; cache.delete(k); }
+    return blob;
+  } finally { delete busy[it.path]; renderLists(); }
+}
+
+/* ---- 打开看：图片、视频、音频页内看；PDF、文字在浏览器里开新标签，主屏幕模式页内看（带「返回」） ---- */
+let vUrl = '', vPushed = false;
+async function openItem(it) {
+  if (busy[it.path]) return;
+  const k = FB.kindOf(it.name);
+  if (k === 'other') return save(it, '这种文件手机上没法直接看，存到「文件」里用别的 App 打开。');
+  let w = null;
+  if (!standalone && k === 'pdf' && !cache.has(it.path)) { // 先在点按的当下开好空白标签，不然下载完再开会被拦
+    try { w = window.open('', '_blank'); } catch (e) { w = null; }
+    if (w) { try { w.document.title = '正在打开'; w.document.body.style.font = '18px -apple-system,sans-serif'; w.document.body.textContent = '正在下载，请稍等…'; } catch (e) {} }
+  }
+  let blob;
+  try { blob = await getBlob(it); }
+  catch (e) { if (w) try { w.close(); } catch (x) {} if (e.message !== 'BUSY') banner('没打开：' + msgOf(e), () => openItem(it)); return; }
+  markSeen(it); // 拿到文件才算看过
+  if (!standalone && k === 'pdf') {
+    const u = URL.createObjectURL(blob);
+    if (!w) { try { w = window.open(u, '_blank'); } catch (e) { w = null; } }
+    else { try { w.location.href = u; } catch (e) { w = null; } }
+    setTimeout(() => URL.revokeObjectURL(u), 10 * 60 * 1000);
+    if (w) return;
+  }
+  showViewer(it, blob, k);
+}
+async function showViewer(it, blob, k) {
+  closeViewer(true);
+  if (k === 'text') { // 纯文字：读出来用 textContent 显示，不用 blob 网址
+    let t = '';
+    try { t = await blob.slice(0, 2 * 1048576).text(); } catch (e) { return save(it); }
+    const pre = el('pre');
+    pre.style.cssText = 'margin:0;padding:12px 14px;white-space:pre-wrap;word-break:break-all;font-size:15px;line-height:1.6';
+    pre.textContent = t;
+    $('v-body').replaceChildren(pre);
+    $('v-tip').hidden = blob.size <= 2 * 1048576;
+    $('v-tip').textContent = '文件太长，只显示前 2 MB；完整的请点「下载」。';
+    return openViewer(it);
+  }
+  if (k !== 'image' && k !== 'video' && k !== 'audio' && k !== 'pdf') return save(it);
+  vUrl = URL.createObjectURL(blob);
+  const body = $('v-body'), tip = $('v-tip');
+  tip.hidden = true;
+  if (k === 'image') {
+    const img = el('img'); img.alt = it.name; img.src = vUrl;
+    img.onclick = () => img.classList.toggle('full');
+    img.onerror = () => { tip.hidden = false; tip.textContent = '这张图这里显示不了，点右上「下载」存到手机里看。'; };
+    body.replaceChildren(img);
+    tip.hidden = false; tip.textContent = '点图片切换原大小';
+  } else if (k === 'video' || k === 'audio') {
+    const m = el(k); m.controls = true; m.setAttribute('playsinline', ''); m.src = vUrl;
+    body.replaceChildren(m);
+  } else {
+    const f = el('iframe'); f.title = it.name; f.src = vUrl;
+    body.replaceChildren(f);
+    tip.hidden = false; tip.textContent = '只看到一页或看不清：点右上「下载」，存到「文件」里看。';
+  }
+  openViewer(it);
+}
+function openViewer(it) {
+  $('v-name').textContent = it.name;
+  $('v-dl').onclick = () => save(it);
+  $('viewer').hidden = false;
+  document.body.style.overflow = 'hidden';
+  try { history.pushState({ fbxViewer: 1 }, ''); vPushed = true; } catch (e) { vPushed = false; }
+}
+function closeViewer(silent) {
+  if ($('viewer').hidden) return;
+  $('viewer').hidden = true;
+  document.body.style.overflow = '';
+  $('v-body').replaceChildren();
+  if (vUrl) { URL.revokeObjectURL(vUrl); vUrl = ''; }
+  if (!silent && vPushed) { vPushed = false; try { history.back(); } catch (e) {} }
+}
+$('v-back').onclick = () => closeViewer(false);
+window.addEventListener('popstate', () => { vPushed = false; closeViewer(true); }); // 左滑返回、安卓返回键也能关
+
+/* ---- 下载：iPhone 优先系统分享（选「存储到文件」），不支持再 a[download] ---- */
+async function save(it, note) {
+  let blob = cache.get(it.path), waited = false;
+  if (!blob) {
+    try { blob = await getBlob(it); waited = true; }
+    catch (e) { if (e.message !== 'BUSY') banner('没下载下来：' + msgOf(e), () => save(it, note)); return; }
+  }
+  // 「新」等真正存下才清：系统分享成功、或走了 a[download]；取消分享保留（在 doSave / aDownload 里清）
+  if (useShare && (waited || note)) return showSheet(it, blob, note); // 下载等过网络后，系统分享要再点一下才弹得出来
+  doSave(it, blob, false);
+}
+function doSave(it, blob, fromSheet) {
+  let file = null;
+  try { file = new File([blob], it.name, { type: blob.type }); } catch (e) {}
+  if (useShare && file && navigator.canShare && navigator.share) {
+    let ok = false;
+    try { ok = navigator.canShare({ files: [file] }); } catch (e) {}
+    if (ok) {
+      navigator.share({ files: [file] }).then(() => markSeen(it), e => {
+        if (e && e.name === 'AbortError') return; // 取消：「新」留着
+        if (e && e.name === 'NotAllowedError' && !fromSheet) return showSheet(it, blob);
+        aDownload(it, blob);
+      });
+      return;
+    }
+  }
+  aDownload(it, blob);
+}
+function aDownload(it, blob) {
+  const u = URL.createObjectURL(blob), a = el('a');
+  a.href = u; a.download = it.name; a.rel = 'noopener';
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(u), 60000);
+  markSeen(it); // 浏览器接到下载动作
+}
+function showSheet(it, blob, note) {
+  $('sh-t').textContent = (note ? note + '\n' : '') + '「' + it.name + '」下载好了（' + FB.fmtSize(blob.size) + '）。点下面按钮，选「存储到文件」。';
+  $('sh-t').style.whiteSpace = 'pre-line';
+  $('sh-ok').onclick = () => { $('sheet').hidden = true; doSave(it, blob, true); };
+  $('sheet').hidden = false;
+}
+$('sh-x').onclick = () => { $('sheet').hidden = true; };
+
+/* ---- 上传 ---- */
+$('file').onchange = e => {
+  const fs = Array.from(e.target.files || []);
+  e.target.value = '';
+  for (const f of fs) {
+    const t = { id: ++idSeq, file: f, name: FB.sanitizeName(f.name), size: f.size, status: 'wait', pct: 0, part: 0, n: 0, err: '' };
+    t.clean = t.name;
+    if (f.size > FB.MAX_TOTAL) { t.status = 'fail'; t.err = '文件太大，请压缩或分开传（一个文件最多 150 MB）。'; t.noRetry = true; }
+    tasks.push(t);
+  }
+  renderTasks();
+  runQueue();
+};
+async function runQueue() {
+  if (running || !client) return;
+  running = true;
+  try {
+    try { items = await client.list(); renderLists(); } catch (e) {}
+    for (;;) {
+      const t = tasks.find(x => x.status === 'wait');
+      if (!t) break;
+      t.status = 'up'; t.err = '';
+      if (!t.day) { const s = FB.stamp(new Date()); t.day = s.day; t.hhmm = s.hhmm; t.top = FB.DIRS.mine; }
+      renderTasks();
+      try {
+        await client.upload(t, (l, tot, part, n) => {
+          const pct = tot ? Math.floor(l * 100 / tot) : 0;
+          if (pct !== t.pct || part !== t.part) { t.pct = pct; t.part = part; t.n = n; renderTasks(); }
+        });
+        t.status = 'done'; t.pct = 100;
+      } catch (e) { t.status = 'fail'; t.err = msgOf(e); if (e.message === 'TOOBIG') t.noRetry = true; }
+      renderTasks();
+    }
+  } finally { running = false; }
+  await loadList();
+  setTimeout(() => { // 传好的几秒后从进度框里拿掉
+    for (let i = tasks.length - 1; i >= 0; i--) if (tasks[i].status === 'done') tasks.splice(i, 1);
+    renderTasks();
+  }, 4000);
+}
+function renderTasks() {
+  const box = $('tasks');
+  box.hidden = !tasks.length;
+  box.replaceChildren(...tasks.map(t => {
+    let st = '';
+    if (t.status === 'wait') st = '等待';
+    else if (t.status === 'up') st = (t.n > 1 ? '第 ' + t.part + '/' + t.n + ' 块 · ' : '') + t.pct + '%';
+    else if (t.status === 'done') st = '已上传';
+    else st = '没传上';
+    const line = el('div', 'l', el('div', 'n', t.name + '（' + FB.fmtSize(t.size) + '）'), el('div', 'st', st));
+    if (t.status === 'fail' && !t.noRetry) {
+      const b = el('button', 'rt', '重试');
+      b.onclick = () => { t.status = 'wait'; renderTasks(); runQueue(); };
+      line.append(b);
+    }
+    if (t.status === 'fail') {
+      const x = el('button', 'rt', '删掉');
+      x.onclick = () => { tasks.splice(tasks.indexOf(t), 1); renderTasks(); };
+      line.append(x);
+    }
+    const row = el('div', 'task' + (t.status === 'done' ? ' ok' : t.status === 'fail' ? ' bad' : ''), line);
+    if (t.status === 'up' || t.status === 'wait') { const i = el('i'); i.style.width = t.pct + '%'; row.append(el('div', 'bar', i)); }
+    if (t.err) row.append(el('div', 'e', t.err));
+    return row;
+  }));
+}
+window.addEventListener('beforeunload', e => { if (running) { e.preventDefault(); e.returnValue = ''; } });
+
+boot();
+})();
+</script>
+</body>
+</html>
